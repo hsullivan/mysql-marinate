@@ -2,18 +2,49 @@ Homework for Chapter 2 of Learning MySQL (2006 edition), from p. 94:
 
 Exercises:
 1) What is command completion?
+	Command completion is a time-saving feature that allows you to use the tab key(on most OSs) to cycle through the list files starting with the characters entered.  
 
 2) What are the relative advantages of installing MySQL using the package,
- directory archive (tarball or "no-install", or compiled methods?
+ directory archive (tarball or "no-install"), or compiled methods?
+	Package - Means that MySQL files are  grouped together in a consistant way.  
+	  - Can be installed using the OS standard installation program (RPMs)
+	  - In RPM distributions though the install locations may follow the OS standard.
+	Directory archive - all the files are ready to run in place, no installer program needed
+	Compiled - Install using the source code, compiling the program yourself.  Can be time consuming, but most flexible
 
 3) How do you verify the integrity of downloaded packages?
+	run a MD5 checksum, verify the resulting value matches what was downloaded
 
 4) How do you add the MySQL bin directory to the operating system path?
+	1. edit .bashrc, add binary directory to PATH.  source .bashrc
+	2. export PATH=$PATH:/usr/bin
+
 
 Additional Exercises (not in the book): 
 1) Document how you installed MySQL and any issues you came across with installation. 
  (The goal is to be easy to install it again on a similar machine.)
-
+	  1. Downloaded RPM files from downloads.mysql.com
+	  2. Checked MD5 sum
+		Used md5sum, but value of file kept changing
+	  3. Installed RPMs for MySQL 5.5.29 Linux 64 bit (as root)
+		rpm -ivh MySQL-server-5.5.29-1.rhel5.x86_64.rpm MySQL-client-5.5.29-1.rhel5.x86_64.rpm
+		rpm -ivh MySQL-test-5.5.29-1.rhel5.x86_64.rpm MySQL-embedded-5.5.29-1.rhel5.x86_64.rpm MySQL-shared-compat-5.5.29-1.rhel5.x86_64.rpm MySQL-devel-5.5.29-1.rhel5.x86_64.rpm
+	  4. Started MySQL
+		/etc/init.d/mysql start
+	  5. Ran secure Installation script - mysql_secure_installation
+		Set root password? [Y/n] y
+		Remove anonymous users? [Y/n] y
+		Disallow root login remotely? [Y/n] y
+		Remove test database and access to it? [Y/n] n
+		Reload privilege tables now? [Y/n] y
+  
 2) Document where important files should be.
+	Default installation Linux RPM
+		- Binaries - /usr/bin
+		- Data & Log files - /var/lib/mysql
+		- Share - /usr/share/mysql
+		- Test files - /usr/share/mysql-test
+		- include - /usr/include/myql
+		- Lib - /usr/lib64/mysql
 
 Do not forget to do a pull request when your homework is complete.
