@@ -1,12 +1,18 @@
 1. When would you use a weak entity?
-
-
+	- A weak entity is one where the information relies on the context of the parent entity, and is only meaninful in the context of the parent entity.  
+	- The Weak entity can be used as part of a one-to-many identifying relationship with the parent table, keeping redundant data out of the parent table.
+	
 2. Is it better to use entities instead of attributes?
-
+	 - There are instances where entities would be a better option to use over a database
+		- If the item is of direct interest to the database - e.g. interested in customers, not their individual e-mail addresses
+		- If the item has components of it's own - e.e. individual class id
+		- can the object have multiple instances - e.g. customer has multiple e-mail addresses
+		- If the object is often nonexistant or unknown -  it's an attribute of only some of the entries ( e.g. students take only a subset of courses)
 
 3. Alter and extend the music database ER model so that it can store 
 compilations, where a compilation is an album that contains tracks by two 
 or more different artists.
+	- see Music-ERDiagram-Ch4Q3.jpg
 
 4. Create an ER diagram for an online media store using the following requirements:
  - There are two types of product: music CDs and video DVDs.
