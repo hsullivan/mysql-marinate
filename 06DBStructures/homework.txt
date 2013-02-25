@@ -13,20 +13,124 @@ was released, and where the album was recorded. Design tables or columns that
 can store this information, and explain the advantages and disadvantages of your
 design. Choose the column types you need, explaining the advantages and disad-
 vantages of your choices.
+	For the Artist Changes:
+		- Create new table musician to list the musician & their skills
+		- Create new table artist_staff to link the artist to the musician and dates worked.
+		(mysql:root@localhost)[music]> CREATE TABLE musician (
+			->   musician_id smallint(5) NOT NULL,
+			->   musician_name char(128) DEFAULT NULL,
+			->   musician_skill VARCHAR(50) default null,
+			->   PRIMARY KEY (`musician_id`)
+			-> );
+		Query OK, 0 rows affected (0.01 sec)
+
+		(mysql:root@localhost)[music]> CREATE TABLE artist_staff (
+			->   artist_id smallint(5) NOT NULL,
+			->   musician_id smallint(5) NOT NULL,
+			->   start_date DATE NOT NULL,
+			->   END_DATE DATE,
+			->   PRIMARY KEY (artist_id, musician_id)
+			-> );
+		Query OK, 0 rows affected (0.01 sec)
+
+	For the Album Changes:
+		- A new table Producer was added to track the producer specific details.  Producer_id added to the album table to match the producer to the album
+		- release_date added to the Album table using date to track the date the album released.  Date format used as albums could be older than the 1970 limit imposed by TIMESTAMP, and time of day is not required
+		- Recording_city, recording_state and recording_country added to track the location.  Nullables allowed.  city & country added as varchar 50 to allow for variable names, recording state CHAR(2) anticipating 2 character US states.
+			(mysql:root@localhost)[music]> CREATE TABLE `producer` (
+				->   `producer_id` smallint(5) NOT NULL,
+				->   `producer_name` char(128) DEFAULT NULL,
+				->   PRIMARY KEY (`producer_id`)
+				-> );
+			Query OK, 0 rows affected (0.00 sec)
+
+			(mysql:root@localhost)[music]> alter table album add producer_id smallint(5) AFTER album_id, add release_date DATE, add recording_city VARCHAR(50), add recording_state CHAR(2), add recording_country VARCHAR(50);
+			Query OK, 13 rows affected (0.01 sec)
+			Records: 13  Duplicates: 0  Warnings: 0
+
+			(mysql:root@localhost)[music]> show create table album \G
+			*************************** 1. row ***************************
+				   Table: album
+			Create Table: CREATE TABLE `album` (
+			  `artist_id` smallint(5) NOT NULL DEFAULT '0',
+			  `album_id` smallint(4) NOT NULL DEFAULT '0',
+			  `producer_id` smallint(5) DEFAULT NULL,
+			  `album_name` char(128) DEFAULT NULL,
+			  `release_date` date DEFAULT NULL,
+			  `recording_city` varchar(50) DEFAULT NULL,
+			  `recording_state` char(2) DEFAULT NULL,
+			  `recording_country` varchar(50) DEFAULT NULL,
+			  PRIMARY KEY (`artist_id`,`album_id`)
+			) ENGINE=InnoDB DEFAULT CHARSET=latin1
+			1 row in set (0.00 sec)
 
 2. There are five types for storing temporal data: DATETIME, DATE, TIME, YEAR, and
 TIMESTAMP. Explain what each is used for, and give an example of a situation in
 which you would choose to use it. Note that http://palominodb.com/blog/2011/05/23/datetime-vs-timestamp
 has some useful information too.
+	- DATETIME  -stores & displays date and time pair in the format YYYY-MM-DD HH:MM:SS for the range 1000-01-01 00:00:00 to 9999-12-31 23:59:59
+		- Helpful  for storing future & past dates, that won't be captured in TIMESTAMP (e.g. Birthdays)
+		- Uses 8 bytes
+	- DATE - Stores and displays a date in the format YYYY-MM-DD for range 1000-01-01 to 9999-12-31
+	- TIME - Stores a time in the format HHH:MM:SS for the range -838:59:59 to 838:59:59.  Allows storing duration of time.
+		- Easier to do math in summing values to find running time
+	- YEAR - Stores 2 of 4 digit year, 4 default.  Range of 1901 to 2155, as well a 0000.  1 Byte of storage
+	- TIMESTAMP - Stores and displaysa date and time pair in the format YYYY-MM-DD HH:MM: SS for the range 1970-01-01 00:00:00 to some time in 2037 (Epoch time)
+		 - Allows setting CURRENT_TIMESTAMP on insert & on update (one per table)
+		 - Useful for adding Current time - logging, auditing.  Not for storing past or future dates
+		 - Takes up 4 bytes 
 
 3. You’ve decided to use the AUTO_INCREMENT feature. List the three requirements that
 must be met by the column you’re applying it to.
+	 - Column it is used on must be indexed
+	 - Column that is is used on cannot have a DEFAULT value
+	 - There can only be on AUTO_INCREMENT column per table
 
 4. Why can only one column in a table have the AUTO_INCREMENT feature?
+	 - MySQL only supports 1 AUTO_INCREMENT column per table
 
 5. Using the monitor, create a table with the following statement:
 mysql> CREATE TABLE exercise (field1 INT(3));
 Using the ALTER TABLE statement, make field1 the primary key, carrying out any
-additional steps you need to make this possible. Add a second column, field2, of
+additional steps you need to make this possible. Add a second column,  field2, of
 type CHAR(64) with a DEFAULT 5 clause. Create an index on a prefix of 10 characters
 from field2.
+	(mysql:root@localhost)[music]> CREATE TABLE exercise (field1 INT(3));
+	Query OK, 0 rows affected (0.00 sec)
+
+	(mysql:root@localhost)[music]> show create table exercise \G
+	*************************** 1. row ***************************
+		   Table: exercise
+	Create Table: CREATE TABLE `exercise` (
+	  `field1` int(3) DEFAULT NULL
+	) ENGINE=InnoDB DEFAULT CHARSET=latin1
+	1 row in set (0.00 sec)
+
+	(mysql:root@localhost)[music]> alter table exercise modify field1 int(3) not null, add primary key (field1);
+	Query OK, 0 rows affected (0.01 sec)
+	Records: 0  Duplicates: 0  Warnings: 0
+
+	(mysql:root@localhost)[music]> show create table exercise \G
+	*************************** 1. row ***************************
+		   Table: exercise
+	Create Table: CREATE TABLE `exercise` (
+	  `field1` int(3) NOT NULL,
+	  PRIMARY KEY (`field1`)
+	) ENGINE=InnoDB DEFAULT CHARSET=latin1
+	1 row in set (0.00 sec)
+
+	(mysql:root@localhost)[music]> alter table exercise add field2 CHAR(64) default 5, add index idx_field2 (field2(10));
+	Query OK, 0 rows affected (0.01 sec)
+	Records: 0  Duplicates: 0  Warnings: 0
+
+	(mysql:root@localhost)[music]> show create table exercise \G
+	*************************** 1. row ***************************
+		   Table: exercise
+	Create Table: CREATE TABLE `exercise` (
+	  `field1` int(3) NOT NULL,
+	  `field2` char(64) DEFAULT '5',
+	  PRIMARY KEY (`field1`),
+	  KEY `idx_field2` (`field2`(10))
+	) ENGINE=InnoDB DEFAULT CHARSET=latin1
+	1 row in set (0.00 sec)
+
